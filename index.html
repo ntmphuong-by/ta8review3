@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REVIEW 3 (Units 7-8-9) - Global Success 9</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #c0392b; /* Màu đỏ đô đặc trưng của Review */
+            --primary-light: #e74c3c;
+            --bg: #fdf2e9;
+            --white: #ffffff;
+            --text: #2c3e50;
+            --success: #27ae60;
+            --error: #c0392b;
+            --border: #f1948a;
+        }
+
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); color: var(--text); overflow: hidden; }
+
+        /* SIDEBAR */
+        .sidebar { width: 320px; background: var(--white); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; z-index: 10; box-shadow: 2px 0 10px rgba(0,0,0,0.05); }
+        .brand { padding: 20px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
+        .nav-scroll { flex: 1; overflow-y: auto; padding: 10px 0; }
+        .nav-item { padding: 12px 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid transparent; transition: 0.2s; color: #7f8c8d; font-weight: 600; font-size: 0.95rem; }
+        .nav-item:hover { background: #fadbd8; color: var(--primary); }
+        .nav-item.active { background: #f5b7b1; border-left-color: var(--primary); color: #922b21; font-weight: 700; }
+        .badge { font-size: 0.75rem; background: var(--white); padding: 2px 8px; border-radius: 12px; color: var(--primary); border: 1px solid var(--primary); }
+
+        /* CONTROLS */
+        .controls { padding: 15px; border-top: 1px solid var(--border); background: #fffaf0; }
+        .toggle-row { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; cursor: pointer; user-select: none; }
+        .switch { width: 44px; height: 24px; background: #bdc3c7; border-radius: 20px; position: relative; transition: 0.3s; }
+        .switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: 0.3s; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        .toggle-row.active .switch { background: var(--success); }
+        .toggle-row.active .switch::after { transform: translateX(20px); }
+        
+        .action-btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; font-size: 0.9rem; margin-top: 8px; }
+        .btn-check { background: var(--primary); color: white; box-shadow: 0 4px 0 #922b21; }
+        .btn-check:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #922b21; }
+        .btn-check:active { transform: translateY(0); box-shadow: none; }
+        .btn-reset { background: white; border: 1px solid #bdc3c7; color: var(--text); }
+        .btn-reset:hover { background: #f2f2f2; }
+
+        /* MAIN CONTENT */
+        .main { flex: 1; overflow-y: auto; padding: 30px; position: relative; scroll-behavior: smooth; }
+        .header-box { margin-bottom: 25px; border-bottom: 3px solid #e6b0aa; padding-bottom: 15px; }
+        .unit-title { font-size: 1.8rem; font-weight: 800; color: var(--primary); margin: 0; }
+        .unit-sub { color: #7f8c8d; margin-top: 5px; font-size: 1.1rem; font-style: italic; }
+
+        /* CONTENT BOX (READING/LISTENING) */
+        .content-box { background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; overflow: hidden; border: 1px solid #e0e0e0; }
+        .box-header { background: #fdedec; padding: 15px 20px; font-weight: 700; color: var(--text); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #fadbd8; }
+        .play-btn { background: var(--success); color: white; border: none; padding: 6px 15px; border-radius: 20px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
+        .play-btn:hover { background: #219150; transform: scale(1.05); }
+        .box-body { padding: 25px; max-height: 350px; overflow-y: auto; font-size: 1.05rem; line-height: 1.8; color: #444; text-align: justify; white-space: pre-line; }
+        .vi-trans { display: block; font-size: 0.95rem; color: #c0392b; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #e6b0aa; font-style: italic; display: none; }
+        .show-trans .vi-trans { display: block; }
+
+        /* EXERCISE CARDS */
+        .card { background: white; border-radius: 12px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #eee; border-left: 5px solid var(--primary); }
+        .card h3 { margin-top: 0; color: #a04000; border-bottom: 2px solid #fadbd8; padding-bottom: 10px; font-size: 1.1rem; }
+        
+        .question-row { margin-bottom: 20px; padding: 15px; background: #fffbfb; border-radius: 8px; border: 1px solid #f2f2f2; transition: 0.3s; }
+        .question-row.correct { background: #eafaf1; border-color: var(--success); border-left: 4px solid var(--success); }
+        .question-row.wrong { background: #fdedec; border-color: var(--error); border-left: 4px solid var(--error); }
+
+        .q-text { font-weight: 600; margin-bottom: 8px; color: #2c3e50; font-size: 1.05rem; }
+        .q-vi { font-size: 0.9rem; color: #7f8c8d; font-style: italic; margin-bottom: 10px; display: none; }
+        .show-trans .q-vi { display: block; }
+
+        select.ans-select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; background: white; cursor: pointer; outline: none; transition: 0.2s; }
+        select.ans-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.1); }
+
+        .feedback { margin-top: 10px; font-weight: 700; font-size: 0.9rem; min-height: 20px; display: flex; align-items: center; gap: 6px; }
+        .fb-correct { color: var(--success); }
+        .fb-wrong { color: var(--error); }
+        
+        .explanation { background: #fdf2e9; padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 0.9rem; color: #a04000; display: none; border-left: 3px solid #d35400; }
+        .show-trans .explanation { display: block; }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; height: auto; }
+            .sidebar { width: 100%; height: auto; }
+            .nav-scroll { max-height: 200px; }
+            .main { overflow: visible; padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="brand"><i class="fas fa-edit"></i> REVIEW 3 (U7-8-9)</div>
+    <div class="nav-scroll" id="navList"></div>
+    <div class="controls">
+        <div class="toggle-row" onclick="toggleTranslation()">
+            <div class="switch" id="transSwitch"></div>
+            <span style="font-weight: 600; font-size: 0.9rem;">Hiển thị Dịch & Giải thích</span>
+        </div>
+        <button class="action-btn btn-check" onclick="checkAll()"><i class="fas fa-check-circle"></i> Chấm điểm</button>
+        <button class="action-btn btn-reset" onclick="resetSection()"><i class="fas fa-sync-alt"></i> Làm lại</button>
+    </div>
+</aside>
+
+<main class="main" id="mainArea">
+    </main>
+
+<script>
+/* ==========================================================================
+   DATA SOURCE - CHÍNH XÁC TỪ SÁCH GIÁO KHOA
+   ========================================================================== */
+const reviewData = [
+    // --- LANGUAGE FOCUS: PRONUNCIATION ---
+    {
+        id: "pronunciation",
+        title: "I. Pronunciation",
+        subtitle: "Choose the word with a different stress pattern.",
+        exercises: [
+            {
+                title: "Ex 1. Choose the word with a different stress pattern.",
+                qs: [
+                    { q: "1. A. humorous &nbsp; B. tremendous &nbsp; C. numerous &nbsp; D. generous", vi: "Chọn từ có trọng âm khác.", a: "tremendous", explain: "hu'morous (1), tre'mendous (2), 'numerous (1), 'generous (1).", opts: ["humorous", "tremendous", "numerous", "generous"] },
+                    { q: "2. A. national &nbsp; B. animal &nbsp; C. arrival &nbsp; D. typical", vi: "Chọn từ có trọng âm khác.", a: "arrival", explain: "'national (1), 'animal (1), ar'rival (2), 'typical (1).", opts: ["national", "animal", "arrival", "typical"] },
+                    { q: "3. A. festival &nbsp; B. cultural &nbsp; C. poisonous &nbsp; D. ambitious", vi: "Chọn từ có trọng âm khác.", a: "ambitious", explain: "'festival (1), 'cultural (1), 'poisonous (1), am'bitious (2).", opts: ["festival", "cultural", "poisonous", "ambitious"] }
+                ]
+            }
+        ]
+    },
+    // --- LANGUAGE FOCUS: VOCABULARY ---
+    {
+        id: "vocabulary_fill",
+        title: "II. Vocabulary (Ex 2)",
+        subtitle: "Complete sentences with words from the box.",
+        exercises: [
+            {
+                title: "Ex 2. Fill in blanks with: single-use, customers, habitats, natural disasters, bargain.",
+                qs: [
+                    { q: "1. We should recycle various ______ products instead of throwing them away.", vi: "Nên tái chế các sản phẩm ______ thay vì vứt đi.", a: "single-use", explain: "single-use products: sản phẩm dùng một lần.", opts: ["single-use", "customers", "habitats", "natural disasters", "bargain"] },
+                    { q: "2. Shopping centres attract a lot of ______ during the sales season.", vi: "Trung tâm mua sắm thu hút nhiều ______ vào mùa giảm giá.", a: "customers", explain: "customers: khách hàng.", opts: ["customers", "single-use", "habitats", "natural disasters", "bargain"] },
+                    { q: "3. Population growth is causing destruction of wildlife ______ throughout the world.", vi: "Gia tăng dân số gây phá hủy ______ động vật hoang dã.", a: "habitats", explain: "wildlife habitats: môi trường sống hoang dã.", opts: ["habitats", "customers", "single-use", "natural disasters", "bargain"] },
+                    { q: "4. Luckily, my home town rarely suffers from ______, such as floods or storms.", vi: "Quê tôi hiếm khi chịu ______ như lũ lụt, bão.", a: "natural disasters", explain: "natural disasters: thiên tai.", opts: ["natural disasters", "customers", "single-use", "habitats", "bargain"] },
+                    { q: "5. Generally, you can't ______ over prices of goods in supermarkets.", vi: "Bạn không thể ______ giá cả ở siêu thị.", a: "bargain", explain: "bargain: mặc cả.", opts: ["bargain", "customers", "single-use", "habitats", "natural disasters"] }
+                ]
+            }
+        ]
+    },
+    {
+        id: "vocabulary_form",
+        title: "II. Vocabulary (Ex 3)",
+        subtitle: "Use correct forms of words.",
+        exercises: [
+            {
+                title: "Ex 3. Word Forms.",
+                qs: [
+                    { q: "1. The tsunami in Tonga was very (destroy) ______; hundreds of houses were swept away.", vi: "Trận sóng thần rất ______.", a: "destructive", explain: "Cần tính từ sau 'was very'.", opts: ["destructive", "destruction", "destroying"] },
+                    { q: "2. One (advantage) ______ of shopping online is that you do not know exactly what you will get.", vi: "Một ______ của mua sắm online...", a: "disadvantage", explain: "Nghĩa tiêu cực -> disadvantage.", opts: ["disadvantage", "advantageous", "advantaged"] },
+                    { q: "3. Endangered species are animals in the wild that face a high risk of (extinct) ______.", vi: "Đối mặt nguy cơ ______.", a: "extinction", explain: "Sau 'risk of' cần danh từ.", opts: ["extinction", "extinct", "extinguished"] },
+                    { q: "4. (Addict) ______ shopping is a form of behaviour that makes shoppers buy many items they don't need.", vi: "Mua sắm ______ là một dạng hành vi...", a: "Addictive", explain: "Tính từ bổ nghĩa cho danh từ shopping.", opts: ["Addictive", "Addiction", "Addicted"] },
+                    { q: "5. When a natural disaster happens, we must listen to (instruct) ______ from local authorities.", vi: "Phải nghe theo ______ từ chính quyền.", a: "instructions", explain: "Cần danh từ số nhiều.", opts: ["instructions", "instructors", "instructive"] }
+                ]
+            }
+        ]
+    },
+    // --- LANGUAGE FOCUS: GRAMMAR ---
+    {
+        id: "grammar_tense",
+        title: "III. Grammar (Ex 4)",
+        subtitle: "Use correct tense of verbs.",
+        exercises: [
+            {
+                title: "Ex 4. Verb Tenses.",
+                qs: [
+                    { q: "1. While I (clean) ______ out my cupboards, I found these photos.", vi: "Trong khi tôi đang dọn dẹp...", a: "was cleaning", explain: "Hành động đang xảy ra (quá khứ tiếp diễn) thì hành động khác xen vào.", opts: ["was cleaning", "cleaned", "am cleaning"] },
+                    { q: "2. Sam is studying hard. He (have) ______ his exam this Friday.", vi: "Cậu ấy có bài thi vào thứ Sáu (lịch trình).", a: "is having", explain: "Dùng thì tiếp diễn hoặc hiện tại đơn cho lịch trình/kế hoạch.", opts: ["is having", "has", "had"] },
+                    { q: "3. This brochure says that the big sale (start) ______ next Friday.", vi: "Tờ rơi nói đợt giảm giá bắt đầu...", a: "starts", explain: "Lịch trình cố định (Timetable) dùng hiện tại đơn.", opts: ["starts", "will start", "is starting"] },
+                    { q: "4. ______ the flood victims still (wait) ______ when the rescuers came?", vi: "Các nạn nhân có đang chờ khi cứu hộ đến không?", a: "Were ... waiting", explain: "Hành động đang diễn ra tại một thời điểm trong quá khứ.", opts: ["Were ... waiting", "Did ... wait", "Are ... waiting"] },
+                    { q: "5. I just (fall) ______ asleep last night when I (hear) ______ a knock at the door.", vi: "Tôi vừa chợp mắt thì nghe tiếng gõ.", a: "was falling / heard", explain: "Hành động đang xảy ra (was falling asleep) bị cắt ngang (heard).", opts: ["was falling / heard", "fell / heard", "had fallen / heard"] }
+                ]
+            }
+        ]
+    },
+    {
+        id: "grammar_complete",
+        title: "III. Grammar (Ex 5)",
+        subtitle: "Complete the sentences.",
+        exercises: [
+            {
+                title: "Ex 5. Choose the correct completion.",
+                qs: [
+                    { q: "1. When I finished my lessons yesterday, ______.", vi: "Khi tôi học xong hôm qua...", a: "I went to play football", explain: "Kể lại chuỗi hành động quá khứ.", opts: ["I went to play football", "I am going out", "I will sleep"] },
+                    { q: "2. Before I go to bed at night, ______.", vi: "Trước khi đi ngủ...", a: "I usually brush my teeth", explain: "Thói quen hiện tại.", opts: ["I usually brush my teeth", "I brushed my teeth", "I was brushing my teeth"] },
+                    { q: "3. I will wait until the teacher ______.", vi: "Tôi sẽ đợi cho đến khi giáo viên...", a: "comes", explain: "Mệnh đề thời gian tương lai dùng hiện tại đơn.", opts: ["comes", "will come", "came"] },
+                    { q: "4. As soon as we have our summer holiday, ______.", vi: "Ngay khi có nghỉ hè...", a: "we will travel to Da Nang", explain: "Mệnh đề chính tương lai đơn.", opts: ["we will travel to Da Nang", "we travelled to Da Nang", "we travel"] },
+                    { q: "5. I usually listen to music while ______.", vi: "Tôi thường nghe nhạc trong khi...", a: "I am doing my homework", explain: "Hai hành động song song.", opts: ["I am doing my homework", "I do my homework", "I did my homework"] }
+                ]
+            }
+        ]
+    },
+    // --- SKILLS: READING ---
+    {
+        id: "reading",
+        title: "IV. Reading (Skills 1)",
+        subtitle: "Read the passage about Landslides.",
+        dialogue: [
+            { c: "Passage", en: "Landslides are the mass movement of rocks or earth down a slope. Landslides occur more frequently in some mountainous areas. They may come suddenly after a storm or heavy rain. When you hear a warning about a landslide in your area, you should do the following:\n- Follow the instructions about emergency information given by authorities.\n- Go to a public shelter if you feel it is unsafe to remain in your home.\n- Listen to unusual sounds, such as trees cracking, or rocks knocking together.\n- Stay away from the slide area. There may be a danger of additional slides.\n- Watch for flooding, which may occur after a landslide.\n- Stay cautious after the storm. Don't do the clean-up until the storm is over.", vi: "Sạt lở đất là sự di chuyển khối lượng lớn đất đá xuống dốc. Sạt lở xảy ra thường xuyên hơn ở một số vùng núi. Chúng có thể đến bất ngờ sau bão hoặc mưa lớn. Khi nghe cảnh báo sạt lở: Tuân theo hướng dẫn khẩn cấp. Đến nơi trú ẩn công cộng nếu thấy không an toàn. Lắng nghe âm thanh lạ (cây gãy, đá va). Tránh xa khu vực sạt lở. Đề phòng lũ lụt. Giữ cảnh giác sau bão, không dọn dẹp cho đến khi bão tan." }
+        ],
+        exercises: [
+            {
+                title: "Ex 1. True (T) or False (F).",
+                qs: [
+                    { q: "1. Landslides hardly ever occur in mountainous areas.", vi: "Sạt lở hiếm khi xảy ra ở miền núi.", a: "False", explain: "Text: 'occur more frequently in some mountainous areas'.", opts: ["False", "True"] },
+                    { q: "2. You should follow the instructions about landslide emergencies.", vi: "Nên tuân theo hướng dẫn khẩn cấp.", a: "True", explain: "Text: 'Follow the instructions...'", opts: ["True", "False"] },
+                    { q: "3. Avoid going to public shelters as they are unsafe.", vi: "Tránh đến nơi trú ẩn công cộng.", a: "False", explain: "Text: 'Go to a public shelter if you feel it is unsafe...'.", opts: ["False", "True"] },
+                    { q: "4. Landslides may occur one after another.", vi: "Sạt lở có thể xảy ra liên tiếp.", a: "True", explain: "Text: 'danger of additional slides'.", opts: ["True", "False"] },
+                    { q: "5. You should stay cautious until the storm is over.", vi: "Nên cảnh giác cho đến khi bão tan.", a: "True", explain: "Text: 'Stay cautious... until the storm is over'.", opts: ["True", "False"] }
+                ]
+            }
+        ]
+    },
+    // --- SKILLS: LISTENING ---
+    {
+        id: "listening",
+        title: "V. Listening (Skills 3)",
+        subtitle: "Listen to the passage about Air Pollution.",
+        dialogue: [
+            { c: "Speaker", en: "The exhaust fumes from vehicles are the main cause of air pollution in our cities. These bad gases can be very harmful for children. Transport is not the only reason why we have pollution. Surprisingly, less pollution today comes from industry than in the past. Nowadays, many bad gases are being released into the air from households.", vi: "Khí thải từ phương tiện là nguyên nhân chính gây ô nhiễm không khí. Khí độc này rất hại cho trẻ em. Giao thông không phải lý do duy nhất. Ngạc nhiên là ngày nay ít ô nhiễm từ công nghiệp hơn xưa. Ngày nay, nhiều khí độc thải ra từ hộ gia đình." }
+        ],
+        exercises: [
+            {
+                title: "Ex 3. Listen and fill in the blanks (max 2 words).",
+                qs: [
+                    { q: "1. The exhaust fumes from vehicles are the main cause of ______ in our cities.", vi: "Khí thải xe cộ là nguyên nhân chính của ______.", a: "air pollution", explain: "Audio: 'cause of air pollution'.", opts: ["air pollution", "traffic jams", "noise", "accidents"] },
+                    { q: "2. Bad gases can be very ______ for children.", vi: "Khí xấu rất ______ cho trẻ em.", a: "harmful", explain: "Audio: 'very harmful'.", opts: ["harmful", "good", "safe", "dangerous"] },
+                    { q: "3. Transport is not the only reason why we have ______.", vi: "Giao thông không phải lý do duy nhất ta có ______.", a: "pollution", explain: "Audio: 'have pollution'.", opts: ["pollution", "cars", "buses", "roads"] },
+                    { q: "4. Less pollution today comes from ______ than in the past.", vi: "Ít ô nhiễm hơn đến từ ______ so với trước kia.", a: "industry", explain: "Audio: 'comes from industry'.", opts: ["industry", "factories", "schools", "parks"] },
+                    { q: "5. Bad gases are being released into the air from ______.", vi: "Khí xấu thải ra từ ______.", a: "households", explain: "Audio: 'from households'.", opts: ["households", "trees", "rivers", "mountains"] }
+                ]
+            }
+        ]
+    },
+    // --- SKILLS: WRITING ---
+    {
+        id: "writing",
+        title: "VI. Writing (Skills 4)",
+        subtitle: "Write a paragraph about shopping habits.",
+        exercises: [
+            {
+                title: "Ex 4. Choose the best sentence to complete the paragraph.",
+                qs: [
+                    { q: "1. My family usually shops ______.", vi: "Gia đình tôi thường mua sắm...", a: "at a big supermarket near our house", explain: "Opening sentence.", opts: ["at a big supermarket near our house", "in the park", "at school"] },
+                    { q: "2. It is ______ because it is open until late.", vi: "Nó rất ______ vì mở cửa muộn.", a: "very convenient", explain: "Convenience factor.", opts: ["very convenient", "not convenient", "too far"] },
+                    { q: "3. The prices there are ______.", vi: "Giá cả thì...", a: "reasonable and affordable", explain: "Pricing factor.", opts: ["reasonable and affordable", "very expensive", "too high"] },
+                    { q: "4. The vegetables and meat are always ______.", vi: "Rau và thịt luôn...", a: "fresh and safe", explain: "Quality factor.", opts: ["fresh and safe", "old", "dirty"] },
+                    { q: "5. There is a ______ of goods to choose from.", vi: "Có ______ hàng hóa để chọn.", a: "wide variety", explain: "Variety factor.", opts: ["wide variety", "small number", "lack"] }
+                ]
+            }
+        ]
+    }
+];
+
+// --- APP LOGIC ---
+let currentIdx = 0;
+let showTranslation = false;
+
+function init() {
+    renderNav();
+    renderSection(0);
+}
+
+function renderNav() {
+    const nav = document.getElementById('navList');
+    nav.innerHTML = '';
+    reviewData.forEach((u, i) => {
+        const div = document.createElement('div');
+        div.className = `nav-item ${i === currentIdx ? 'active' : ''}`;
+        div.innerHTML = `<span>${u.title}</span> <span class="badge">${countQ(u)} câu</span>`;
+        div.onclick = () => { currentIdx = i; renderNav(); renderSection(i); };
+        nav.appendChild(div);
+    });
+}
+
+function countQ(u) { return u.exercises ? u.exercises.reduce((acc, e) => acc + e.qs.length, 0) : 0; }
+
+function renderSection(idx) {
+    const u = reviewData[idx];
+    const main = document.getElementById('mainArea');
+    main.innerHTML = '';
+
+    // Header
+    const hBox = document.createElement('div');
+    hBox.className = 'header-box';
+    hBox.innerHTML = `<h1 class="unit-title">${u.title}</h1><div class="unit-sub">${u.subtitle}</div>`;
+    main.appendChild(hBox);
+
+    // Reading/Listening Passage
+    if (u.dialogue) {
+        const contentBox = document.createElement('div');
+        contentBox.className = 'content-box';
+        contentBox.innerHTML = `
+            <div class="box-header">
+                <span><i class="fas fa-book-open"></i> PASSAGE / SCRIPT</span>
+                <button class="play-btn" onclick="speakText('${u.dialogue[0].en.replace(/'/g, "\\'")}')"><i class="fas fa-volume-up"></i> Nghe</button>
+            </div>
+            <div class="box-body">
+                <div>${u.dialogue[0].en}</div>
+                <div class="vi-trans">${u.dialogue[0].vi}</div>
+            </div>
+        `;
+        main.appendChild(contentBox);
+    }
+
+    // Exercises
+    if (u.exercises) {
+        u.exercises.forEach((ex, exIdx) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `<h3>${ex.title}</h3>`;
+            
+            ex.qs.forEach((q, qIdx) => {
+                const row = document.createElement('div');
+                row.className = 'question-row';
+                row.id = `q-${exIdx}-${qIdx}`;
+                
+                // Shuffle options
+                const shuffled = [...q.opts].sort(() => Math.random() - 0.5);
+                const optsHtml = shuffled.map(o => `<option value="${o}">${o}</option>`).join('');
+
+                row.innerHTML = `
+                    <div class="q-text">${q.q}</div>
+                    <div class="q-vi">${q.vi}</div>
+                    ${q.img ? `<img src="${q.img}" class="q-img" alt="Sign">` : ''}
+                    <select class="ans-select" id="ans-${exIdx}-${qIdx}" data-correct="${q.a}">
+                        <option value="">-- Chọn đáp án --</option>
+                        ${optsHtml}
+                    </select>
+                    <div class="feedback" id="fb-${exIdx}-${qIdx}"></div>
+                    <div class="explanation" id="exp-${exIdx}-${qIdx}">💡 ${q.explain}</div>
+                `;
+                card.appendChild(row);
+            });
+            main.appendChild(card);
+        });
+    }
+    updateTransVisibility();
+}
+
+function toggleTranslation() {
+    showTranslation = !showTranslation;
+    const btn = document.querySelector('.toggle-row');
+    if(showTranslation) btn.classList.add('active'); else btn.classList.remove('active');
+    updateTransVisibility();
+}
+
+function updateTransVisibility() {
+    const main = document.getElementById('mainArea');
+    if(showTranslation) main.classList.add('show-trans'); else main.classList.remove('show-trans');
+}
+
+function checkAll() {
+    const u = reviewData[currentIdx];
+    if(!u.exercises) return;
+    let total = 0, correct = 0;
+    
+    u.exercises.forEach((ex, exIdx) => {
+        ex.qs.forEach((q, qIdx) => {
+            total++;
+            const row = document.getElementById(`q-${exIdx}-${qIdx}`);
+            const sel = document.getElementById(`ans-${exIdx}-${qIdx}`);
+            const fb = document.getElementById(`fb-${exIdx}-${qIdx}`);
+            const userAns = sel.value;
+            
+            row.classList.remove('correct', 'wrong');
+            if(userAns === q.a) {
+                correct++;
+                row.classList.add('correct');
+                fb.innerHTML = `<span class="fb-correct"><i class="fas fa-check"></i> Chính xác!</span>`;
+            } else {
+                row.classList.add('wrong');
+                fb.innerHTML = `<span class="fb-wrong"><i class="fas fa-times"></i> Sai rồi. Đáp án: ${q.a}</span>`;
+            }
+        });
+    });
+    alert(`Bạn đã làm đúng ${correct}/${total} câu.`);
+}
+
+function resetSection() { renderSection(currentIdx); }
+
+function speakText(text) {
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang = 'en-US';
+    utt.rate = 0.9;
+    window.speechSynthesis.speak(utt);
+}
+
+// Start
+init();
+</script>
+</body>
+</html>
